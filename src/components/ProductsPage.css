@@ -1,0 +1,118 @@
+/* src/components/ProductsPage.css */
+
+.products-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.products-page-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* Стили для формы поиска */
+.search-container {
+  margin-bottom: 30px;
+  position: relative;
+  max-width: 100%;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px 14px 50px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-container::before {
+  content: "🔍";
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Адаптивная сетка товаров */
+.products-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 35px !important;
+  row-gap: 35px !important;
+  column-gap: 35px !important;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 1200px) {
+  .products-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    gap: 30px !important;
+    row-gap: 30px !important;
+    column-gap: 30px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    gap: 25px !important;
+    row-gap: 25px !important;
+    column-gap: 25px !important;
+  }
+
+  .products-page-container {
+    padding: 20px 15px;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-list {
+    grid-template-columns: 1fr !important;
+    gap: 25px !important;
+  }
+}
+
+.no-products {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #d32f2f;
+}

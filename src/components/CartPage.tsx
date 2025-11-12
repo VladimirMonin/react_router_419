@@ -1,6 +1,8 @@
 // src/components/CartPage.tsx
 import { useCart } from '../hooks/useCart';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../services/api';
+import './CartPage.css';
 
 export function CartPage() {
   const { items, updateQuantity, removeFromCart, getTotalItems, clearCart } = useCart();
@@ -42,16 +44,29 @@ export function CartPage() {
       <h1>Корзина ({getTotalItems()} товаров)</h1>
       
       <div className="cart-items">
-        {items.map((item) => (
-          <div key={item.product.id} className="cart-item">
-            {/* Изображение товара */}
-            {item.product.image_url && (
-              <img 
-                src={item.product.image_url} 
-                alt={item.product.name}
-                style={{ width: '80px', height: '80px', objectFit: 'cover', marginRight: '15px' }}
-              />
-            )}
+        {items.map((item) => {
+          const imageUrl = getImageUrl(item.product.image_url);
+          
+          return (
+            <div key={item.product.id} className="cart-item">
+              {/* Изображение товара или placeholder */}
+              {imageUrl ? (
+                <img 
+                  src={imageUrl} 
+                  alt={item.product.name}
+                  className="cart-item-image"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (placeholder) {
+                      placeholder.style.display = 'flex';
+                    }
+                  }}
+                />
+              ) : null}
+              <div className="cart-item-image-placeholder" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                📦
+              </div>
             
             <div className="item-info">
               <h3>{item.product.name}</h3>
@@ -93,7 +108,8 @@ export function CartPage() {
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
       
       <div className="cart-summary">

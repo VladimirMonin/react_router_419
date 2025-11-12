@@ -15,6 +15,7 @@
 .app-header nav {
   display: flex;
   gap: 2rem;
+  align-items: center;
 }
 
 .app-header nav a {
@@ -22,18 +23,58 @@
   text-decoration: none;
   font-size: 1.1rem;
   font-weight: bold;
+  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-header nav button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.app-header nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Стили для активного пункта меню */
-
 .app-header nav a.active {
   border-bottom: 2px solid #ebcd69;
   color: #ebcd69;
+  padding-bottom: 6px;
 }
+
 /* Hover */
 .app-header nav a:hover {
   color: #ebcd69;
-  transition: color 0.5s;
+  transition: color 0.2s;
+}
+
+/* Стили для корзины */
+.cart-link {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-counter {
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .app-content {

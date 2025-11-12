@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from './ProductCard';
+import './ProductsPage.css';
 
 export function ProductsPage() {
   // Состояние для контролируемого поля поиска
@@ -20,9 +21,9 @@ export function ProductsPage() {
   // Обработка состояния загрузки
   if (loading) {
     return (
-      <div className="container">
-        <h1>Каталог товаров</h1>
-        <p>Загрузка товаров...</p>
+      <div className="products-page-container">
+        <h1 className="products-page-title">Каталог товаров</h1>
+        <p className="loading-message">Загрузка товаров...</p>
       </div>
     );
   }
@@ -30,16 +31,16 @@ export function ProductsPage() {
   // Обработка ошибок
   if (error) {
     return (
-      <div className="container">
-        <h1>Каталог товаров</h1>
-        <p style={{ color: 'red' }}>Ошибка загрузки: {error}</p>
+      <div className="products-page-container">
+        <h1 className="products-page-title">Каталог товаров</h1>
+        <p className="error-message">Ошибка загрузки: {error}</p>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <h1>Каталог товаров</h1>
+    <div className="products-page-container">
+      <h1 className="products-page-title">Каталог товаров</h1>
       
       {/* Контролируемая форма поиска */}
       <div className="search-container">
@@ -53,7 +54,7 @@ export function ProductsPage() {
       </div>
 
       {filteredProducts.length === 0 ? (
-        <p>Товары не найдены</p>
+        <p className="no-products">Товары не найдены</p>
       ) : (
         <ul className="products-list">
           {filteredProducts.map((product) => (

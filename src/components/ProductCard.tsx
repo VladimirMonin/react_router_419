@@ -2,8 +2,8 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '../types/api';
 import { useCart } from '../hooks/useCart';
-// Import css
-import '../App.css';
+import { getImageUrl } from '../services/api';
+import './ProductCard.css';
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +11,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const imageUrl = getImageUrl(product.image_url);
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -18,29 +19,38 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <li className="product-card">
-      {/* Изображение продукта */}
-      {product.image_url && (
+      {/* Изображение продукта или placeholder */}
+      {imageUrl ? (
         <img 
-          src={product.image_url} 
+          src={imageUrl} 
           alt={product.name}
           className="product-image"
+          onError={(e) => {
+            // Если изображение не загрузилось, показываем placeholder
+            e.currentTarget.style.display = 'none';
+            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+            if (placeholder) {
+              placeholder.style.display = 'flex';
+            }
+          }}
         />
-      )}
+      ) : null}
+      <div className="product-image-placeholder" style={{ display: imageUrl ? 'none' : 'flex' }}>
+        📦
+      </div>
       
       <h3>{product.name}</h3>
       
       {/* Цены в обеих валютах */}
       <div className="product-prices">
-        <p>💰 {product.price_shmeckles} шмеклей</p>
-        <p>🌟 {product.price_flurbos} флёрбосов</p>
+        <p>💰 {product.price_shmeckles} шм.</p>
+        <p>🌟 {product.price_flurbos} фл.</p>
       </div>
-      
-      <p>{product.description}</p>
       
       {/* Категория */}
       {product.category && (
         <p className="product-category">
-          📂 Категория: {product.category.name}
+          📂 {product.category.name}
         </p>
       )}
       
