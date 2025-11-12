@@ -1,7 +1,7 @@
 // src/hooks/useCart.tsx
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Product } from '../data/products';
+import type { Product } from '../types/api';
 
 // Тип для элемента корзины (товар + количество)
 export interface CartItem {

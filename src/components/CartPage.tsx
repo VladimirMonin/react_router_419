@@ -5,9 +5,14 @@ import { Link } from 'react-router-dom';
 export function CartPage() {
   const { items, updateQuantity, removeFromCart, getTotalItems, clearCart } = useCart();
 
-  // Вычисляем общую сумму
+  // Вычисляем общую сумму в шмеклях (можно добавить переключатель валют)
   const getTotalPrice = () => {
-    return items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return items.reduce((total, item) => total + item.product.price_shmeckles * item.quantity, 0);
+  };
+  
+  // Вычисляем общую сумму в флёрбосах
+  const getTotalPriceFlurbos = () => {
+    return items.reduce((total, item) => total + item.product.price_flurbos * item.quantity, 0);
   };
 
   const handleQuantityChange = (productId: number, newQuantity: number) => {
@@ -39,10 +44,22 @@ export function CartPage() {
       <div className="cart-items">
         {items.map((item) => (
           <div key={item.product.id} className="cart-item">
+            {/* Изображение товара */}
+            {item.product.image_url && (
+              <img 
+                src={item.product.image_url} 
+                alt={item.product.name}
+                style={{ width: '80px', height: '80px', objectFit: 'cover', marginRight: '15px' }}
+              />
+            )}
+            
             <div className="item-info">
               <h3>{item.product.name}</h3>
               <p className="item-description">{item.product.description}</p>
-              <p className="item-price">Цена за шт.: {item.product.price} руб.</p>
+              <div className="item-price">
+                <p>💰 {item.product.price_shmeckles} шмеклей</p>
+                <p>🌟 {item.product.price_flurbos} флёрбосов</p>
+              </div>
             </div>
             
             <div className="item-controls">
@@ -64,7 +81,8 @@ export function CartPage() {
               </div>
               
               <div className="item-total">
-                <strong>{item.product.price * item.quantity} руб.</strong>
+                <p><strong>💰 {item.product.price_shmeckles * item.quantity} шм.</strong></p>
+                <p><strong>🌟 {item.product.price_flurbos * item.quantity} фл.</strong></p>
               </div>
               
               <button 
@@ -80,7 +98,9 @@ export function CartPage() {
       
       <div className="cart-summary">
         <div className="total-section">
-          <h3>Итого: {getTotalPrice()} руб.</h3>
+          <h3>Итого:</h3>
+          <p>💰 {getTotalPrice().toFixed(2)} шмеклей</p>
+          <p>🌟 {getTotalPriceFlurbos().toFixed(2)} флёрбосов</p>
           <div className="cart-actions">
             <button className="clear-cart-btn" onClick={clearCart}>
               Очистить корзину
