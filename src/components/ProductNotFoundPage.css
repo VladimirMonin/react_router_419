@@ -1,0 +1,29 @@
+/*  */
+.container-product-not-found {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.container-product-not-found button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.container-product-not-found button a {
+  color: white;
+  text-decoration: none;
+}
+
+.container-product-not-found button:hover {
+  background-color: #2980b9;
+}
+
+.container-product-not-found h1 {
+  font-size: 3rem;
+  color: #e74c3c;
+}

@@ -1,0 +1,51 @@
+/* src/components/MainLayout.css */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: #2c3e50;
+  padding: 1rem 0;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-header nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.app-header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* Стили для активного пункта меню */
+
+.app-header nav a.active {
+  border-bottom: 2px solid #ebcd69;
+  color: #ebcd69;
+}
+/* Hover */
+.app-header nav a:hover {
+  color: #ebcd69;
+  transition: color 0.5s;
+}
+
+.app-content {
+  /* Заставляет основной контент занимать все доступное пространство */
+  flex-grow: 1;
+}
+
+.app-footer {
+  background-color: #34495e;
+  color: #ecf0f1;
+  padding: 1.5rem 0;
+  text-align: center;
+  /* Прижимает подвал к низу страницы, если контента мало */
+  margin-top: auto;
+}
