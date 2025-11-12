@@ -7,6 +7,27 @@ import type { Product } from '../types/api';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 /**
+ * Получить полный URL изображения
+ * Если image_url относительный (начинается с /), добавляем базовый URL
+ */
+export const getImageUrl = (imageUrl: string | undefined): string | undefined => {
+  if (!imageUrl) return undefined;
+  
+  // Если URL уже полный (начинается с http:// или https://)
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  
+  // Если относительный путь (начинается с /)
+  if (imageUrl.startsWith('/')) {
+    return `${API_BASE_URL}${imageUrl}`;
+  }
+  
+  // Если путь без слеша в начале
+  return `${API_BASE_URL}/${imageUrl}`;
+};
+
+/**
  * API для работы с продуктами
  */
 export const productsApi = {
