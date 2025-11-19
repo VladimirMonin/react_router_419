@@ -43,7 +43,7 @@ export const getImageUrl = (imageUrl: string | undefined): string | undefined =>
  */
 export const authApi = {
   async login(formData: URLSearchParams): Promise<LoginResponse> {
-    const response = await fetch(`${API_BASE_URL}/auth/jwt/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
