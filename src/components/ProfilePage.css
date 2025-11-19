@@ -5,9 +5,104 @@
 }
 
 .profile-title {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 28px;
 }
 
-.profile-description {
-  line-height: 1.6;
+/* Блок с информацией о пользователе */
+.profile-info {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info-item {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-info-item:last-child {
+  border-bottom: none;
+}
+
+.profile-info-label {
+  font-weight: 600;
+  color: #5a6c7d;
+  min-width: 100px;
+  margin-right: 15px;
+}
+
+.profile-info-value {
+  color: #2c3e50;
+  word-break: break-all;
+}
+
+/* Блок с бейджами */
+.profile-badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Общие стили для badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Админ бейдж */
+.badge-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.badge-admin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Обычный пользователь бейдж */
+.badge-user {
+  background: #ecf0f1;
+  color: #5a6c7d;
+  border: 1px solid #d5d8dc;
+}
+
+/* Подтвержденный аккаунт */
+.badge-verified {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
+}
+
+.badge-verified:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+}
+
+/* Неподтвержденный аккаунт */
+.badge-unverified {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+@media (max-width: 768px) {
+  .profile-info-item {
+    flex-direction: column;
+  }
+
+  .profile-info-label {
+    margin-bottom: 5px;
+  }
 }
