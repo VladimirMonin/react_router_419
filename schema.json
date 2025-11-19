@@ -1,0 +1,1329 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Учебное приложение Python419",
+    "description": "Пример простого API для управления пользователями",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Auth:Jwt.Login",
+        "operationId": "auth_jwt_login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth_jwt_login_auth_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BearerResponse" },
+                "example": {
+                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiOTIyMWZmYzktNjQwZi00MzcyLTg2ZDMtY2U2NDJjYmE1NjAzIiwiYXVkIjoiZmFzdGFwaS11c2VyczphdXRoIiwiZXhwIjoxNTcxNTA0MTkzfQ.M10bjOe45I5Ncu_uXvOmVV8QxnL-nZfcH96U90JaocI",
+                  "token_type": "bearer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorModel" },
+                "examples": {
+                  "LOGIN_BAD_CREDENTIALS": {
+                    "summary": "Bad credentials or the user is inactive.",
+                    "value": { "detail": "LOGIN_BAD_CREDENTIALS" }
+                  },
+                  "LOGIN_USER_NOT_VERIFIED": {
+                    "summary": "The user is not verified.",
+                    "value": { "detail": "LOGIN_USER_NOT_VERIFIED" }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Auth:Jwt.Logout",
+        "operationId": "auth_jwt_logout_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "401": { "description": "Missing token or inactive user." }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register:Register",
+        "operationId": "register_register_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserRead" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorModel" },
+                "examples": {
+                  "REGISTER_USER_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": { "detail": "REGISTER_USER_ALREADY_EXISTS" }
+                  },
+                  "REGISTER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "REGISTER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Users:Current User",
+        "operationId": "users_current_user_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserRead" }
+              }
+            }
+          },
+          "401": { "description": "Missing token or inactive user." }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Users:Patch Current User",
+        "operationId": "users_patch_current_user_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserUpdate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserRead" }
+              }
+            }
+          },
+          "401": { "description": "Missing token or inactive user." },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorModel" },
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": { "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS" }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Users:User",
+        "operationId": "users_user_users__id__get",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserRead" }
+              }
+            }
+          },
+          "401": { "description": "Missing token or inactive user." },
+          "403": { "description": "Not a superuser." },
+          "404": { "description": "The user does not exist." },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Users:Patch User",
+        "operationId": "users_patch_user_users__id__patch",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserRead" }
+              }
+            }
+          },
+          "401": { "description": "Missing token or inactive user." },
+          "403": { "description": "Not a superuser." },
+          "404": { "description": "The user does not exist." },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UPDATE_USER_EMAIL_ALREADY_EXISTS": {
+                    "summary": "A user with this email already exists.",
+                    "value": { "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS" }
+                  },
+                  "UPDATE_USER_INVALID_PASSWORD": {
+                    "summary": "Password validation failed.",
+                    "value": {
+                      "detail": {
+                        "code": "UPDATE_USER_INVALID_PASSWORD",
+                        "reason": "Password should beat least 3 characters"
+                      }
+                    }
+                  }
+                },
+                "schema": { "$ref": "#/components/schemas/ErrorModel" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Users:Delete User",
+        "operationId": "users_delete_user_users__id__delete",
+        "security": [{ "OAuth2PasswordBearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Id" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "401": { "description": "Missing token or inactive user." },
+          "403": { "description": "Not a superuser." },
+          "404": { "description": "The user does not exist." },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/": {
+      "get": {
+        "tags": ["Категории"],
+        "summary": "Получить список всех категорий",
+        "description": "Возвращает список всех категорий с возможностью пагинации.",
+        "operationId": "list_categories_categories__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" },
+                  "title": "Response List Categories Categories  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Категории"],
+        "summary": "Создать новую категорию",
+        "description": "Создаёт новую категорию. Имя категории должно быть уникальным.",
+        "operationId": "create_category_categories__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CategoryCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{category_id}": {
+      "get": {
+        "tags": ["Категории"],
+        "summary": "Получить категорию по ID",
+        "description": "Возвращает конкретную категорию по её уникальному идентификатору.",
+        "operationId": "get_category_categories__category_id__get",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Category Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Категории"],
+        "summary": "Обновить категорию",
+        "description": "Выполняет полное обновление категории по ID.",
+        "operationId": "update_category_categories__category_id__put",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Category Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CategoryCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Category" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Категории"],
+        "summary": "Удалить категорию",
+        "description": "Удаляет категорию по ID. Нельзя удалить категорию, если к ней привязаны продукты.",
+        "operationId": "delete_category_categories__category_id__delete",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Category Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags/": {
+      "get": {
+        "tags": ["Теги"],
+        "summary": "Получить список всех тегов",
+        "description": "Возвращает список всех тегов с возможностью пагинации.",
+        "operationId": "list_tags_tags__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Tag" },
+                  "title": "Response List Tags Tags  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Теги"],
+        "summary": "Создать новый тег",
+        "description": "Создаёт новый тег. Имя тега должно быть уникальным.",
+        "operationId": "create_tag_tags__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tag" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags/{tag_id}": {
+      "get": {
+        "tags": ["Теги"],
+        "summary": "Получить тег по ID",
+        "description": "Возвращает конкретный тег по его уникальному идентификатору.",
+        "operationId": "get_tag_tags__tag_id__get",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Tag Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tag" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Теги"],
+        "summary": "Обновить тег",
+        "description": "Выполняет полное обновление тега по ID.",
+        "operationId": "update_tag_tags__tag_id__put",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Tag Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tag" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Теги"],
+        "summary": "Удалить тег",
+        "description": "Удаляет тег по ID. Связи с продуктами удаляются автоматически.",
+        "operationId": "delete_tag_tags__tag_id__delete",
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Tag Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{product_id}": {
+      "get": {
+        "tags": ["Товары", "Products"],
+        "summary": "Получить данные о товаре",
+        "description": "Возвращает данные о товаре по его ID.",
+        "operationId": "get_product_products__product_id__get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Product Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Товары"],
+        "summary": "Обновить данные о товаре",
+        "description": "Обновляет данные о товаре по его ID.",
+        "operationId": "update_product_products__product_id__put",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Product Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Товары"],
+        "summary": "Удалить товар",
+        "description": "Удаляет товар по его ID.",
+        "operationId": "delete_product_products__product_id__delete",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Product Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "title": "Response Delete Product Products  Product Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "tags": ["Товары"],
+        "summary": "Получить список всех товаров",
+        "description": "Возвращает список всех товаров с возможностью фильтрации и сортировки.\n- **search**: Поиск по названию и описанию товара.\n- **sort**: Сортировка по цене. Формат: `currency_direction` (например, `credits_asc`, `shmeckles_desc`).\n- **has_image**: Если True, возвращаются только товары с изображениями.",
+        "operationId": "list_products_products__get",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "has_image",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Has Image"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Product" },
+                  "title": "Response List Products Products  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Товары", "Products"],
+        "summary": "Создать новый товар",
+        "description": "Создает новый товар.",
+        "operationId": "create_product_products__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Product" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{product_id}/upload-image": {
+      "post": {
+        "tags": ["Товары", "Products"],
+        "summary": "Загрузить изображение для товара",
+        "description": "Загружает изображение для товара.\nЗаменяет старое изображение, если оно существует.\n\n- **product_id**: ID товара\n- **file**: Файл изображения (JPG, PNG, GIF, WEBP, макс 5MB)",
+        "operationId": "upload_product_image_products__product_id__upload_image_post",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Product Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_product_image_products__product_id__upload_image_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{product_id}/image": {
+      "delete": {
+        "tags": ["Товары", "Products"],
+        "summary": "Удалить изображение товара",
+        "description": "Удаляет изображение товара из файловой системы и БД.",
+        "operationId": "delete_product_image_endpoint_products__product_id__image_delete",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Product Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BearerResponse": {
+        "properties": {
+          "access_token": { "type": "string", "title": "Access Token" },
+          "token_type": { "type": "string", "title": "Token Type" }
+        },
+        "type": "object",
+        "required": ["access_token", "token_type"],
+        "title": "BearerResponse"
+      },
+      "Body_auth_jwt_login_auth_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              { "type": "string", "pattern": "^password$" },
+              { "type": "null" }
+            ],
+            "title": "Grant Type"
+          },
+          "username": { "type": "string", "title": "Username" },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": { "type": "string", "title": "Scope", "default": "" },
+          "client_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": ["username", "password"],
+        "title": "Body_auth_jwt_login_auth_login_post"
+      },
+      "Body_upload_product_image_products__product_id__upload_image_post": {
+        "properties": {
+          "file": { "type": "string", "format": "binary", "title": "File" }
+        },
+        "type": "object",
+        "required": ["file"],
+        "title": "Body_upload_product_image_products__product_id__upload_image_post"
+      },
+      "Category": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Name",
+            "description": "Название категории",
+            "example": "Портальные пушки"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Уникальный идентификатор категории",
+            "example": 1
+          }
+        },
+        "type": "object",
+        "required": ["name", "id"],
+        "title": "Category",
+        "description": "Схема для отображения категории, включая её ID из базы данных."
+      },
+      "CategoryCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Name",
+            "description": "Название категории",
+            "example": "Портальные пушки"
+          }
+        },
+        "type": "object",
+        "required": ["name"],
+        "title": "CategoryCreate",
+        "description": "Схема для создания новой категории."
+      },
+      "ErrorModel": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              { "type": "string" },
+              { "additionalProperties": { "type": "string" }, "type": "object" }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": ["detail"],
+        "title": "ErrorModel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Product": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Уникальный идентификатор продукта",
+            "example": 42
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Название продукта",
+            "example": "Смартфон 'Космос-X'"
+          },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description",
+            "description": "Подробное описание продукта",
+            "example": "Футуристический смартфон с прозрачным экраном и ИИ-помощником."
+          },
+          "image_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Image Url",
+            "description": "URL-адрес изображения продукта",
+            "example": "https://example.com/images/kosmos-x.jpg"
+          },
+          "price_shmeckles": {
+            "type": "number",
+            "title": "Price Shmeckles",
+            "description": "Цена продукта в Шмеклях",
+            "example": 999.99
+          },
+          "price_flurbos": {
+            "type": "number",
+            "title": "Price Flurbos",
+            "description": "Цена продукта в Флёрбосах",
+            "example": 120.5
+          },
+          "category": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/Category" },
+              { "type": "null" }
+            ],
+            "description": "Категория продукта (вложенный объект)"
+          },
+          "tags": {
+            "items": { "$ref": "#/components/schemas/Tag" },
+            "type": "array",
+            "title": "Tags",
+            "description": "Список тегов продукта (вложенные объекты)",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": ["id", "name", "price_shmeckles", "price_flurbos"],
+        "title": "Product",
+        "description": "Схема для отображения продукта со всеми связанными данными из БД."
+      },
+      "ProductCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "title": "Name",
+            "description": "Название продукта",
+            "example": "Смартфон 'Космос-X'"
+          },
+          "description": {
+            "anyOf": [
+              { "type": "string", "maxLength": 1000 },
+              { "type": "null" }
+            ],
+            "title": "Description",
+            "description": "Подробное описание продукта",
+            "example": "Футуристический смартфон с прозрачным экраном и ИИ-помощником."
+          },
+          "image_url": {
+            "anyOf": [
+              { "type": "string", "maxLength": 255 },
+              { "type": "null" }
+            ],
+            "title": "Image Url",
+            "description": "URL-адрес изображения продукта",
+            "example": "https://example.com/images/kosmos-x.jpg"
+          },
+          "price_shmeckles": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Price Shmeckles",
+            "description": "Цена продукта в Шмеклях",
+            "example": 999.99
+          },
+          "price_flurbos": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Price Flurbos",
+            "description": "Цена продукта в Флёрбосах",
+            "example": 120.5
+          },
+          "category_id": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Category Id",
+            "description": "ID категории, к которой относится продукт",
+            "example": 1
+          },
+          "tag_ids": {
+            "items": { "type": "integer" },
+            "type": "array",
+            "title": "Tag Ids",
+            "description": "Список ID тегов, связанных с продуктом",
+            "default": [],
+            "example": [101, 105]
+          }
+        },
+        "type": "object",
+        "required": ["name", "price_shmeckles", "price_flurbos"],
+        "title": "ProductCreate",
+        "description": "Схема для создания нового продукта."
+      },
+      "Tag": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 2,
+            "title": "Name",
+            "description": "Название тега",
+            "example": "Новинка"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Уникальный идентификатор тега",
+            "example": 101
+          }
+        },
+        "type": "object",
+        "required": ["name", "id"],
+        "title": "Tag",
+        "description": "Схема для отображения тега, включая его ID из базы данных."
+      },
+      "TagCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 2,
+            "title": "Name",
+            "description": "Название тега",
+            "example": "Новинка"
+          }
+        },
+        "type": "object",
+        "required": ["name"],
+        "title": "TagCreate",
+        "description": "Схема для создания нового тега."
+      },
+      "UserCreate": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "password": { "type": "string", "title": "Password" }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["email", "password"],
+        "title": "UserCreate",
+        "description": "Схема для регистрации нового пользователя без критичных флагов."
+      },
+      "UserRead": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "is_superuser": {
+            "type": "boolean",
+            "title": "Is Superuser",
+            "default": false
+          },
+          "is_verified": {
+            "type": "boolean",
+            "title": "Is Verified",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["id", "email"],
+        "title": "UserRead",
+        "description": "Схема для чтения данных пользователя (без пароля)."
+      },
+      "UserUpdate": {
+        "properties": {
+          "password": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Password"
+          },
+          "email": {
+            "anyOf": [
+              { "type": "string", "format": "email" },
+              { "type": "null" }
+            ],
+            "title": "Email"
+          },
+          "is_active": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Active"
+          },
+          "is_superuser": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Superuser"
+          },
+          "is_verified": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Verified"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate",
+        "description": "Схема для обновления данных пользователя."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": { "password": { "scopes": {}, "tokenUrl": "/auth/login" } }
+      }
+    }
+  }
+}

@@ -44,3 +44,33 @@ export interface Product {
   /** Список тегов продукта (вложенные объекты) */
   tags: Tag[];
 }
+
+/**
+ * Ответ при успешном входе
+ */
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
+/**
+ * Данные пользователя
+ */
+export interface User {
+  id: string; // UUID usually
+  email: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  is_verified: boolean;
+}
+
+/**
+ * Данные для регистрации
+ */
+export interface RegisterData {
+  email: string;
+  password: string;
+  is_active?: boolean;
+  is_superuser?: boolean;
+  is_verified?: boolean;
+}
