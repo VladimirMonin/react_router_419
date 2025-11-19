@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { authApi } from '../services/api';
+import './LoginPage.css';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -47,9 +48,9 @@ export const LoginPage = () => {
       <h1>Вход</h1>
       <p>Вы должны войти в систему, чтобы просмотреть страницу по адресу: {from}</p>
       
-      <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px 0' }}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email" style={{ display: 'block', marginBottom: '5px' }}>
+      <form onSubmit={handleSubmit} className="login-form">
+        <div className="login-form-group">
+          <label htmlFor="email" className="login-form-label">
             Email:
           </label>
           <input
@@ -59,12 +60,12 @@ export const LoginPage = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+            className="login-form-input"
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>
+        <div className="login-form-group">
+          <label htmlFor="password" className="login-form-label">
             Пароль:
           </label>
           <input
@@ -74,12 +75,12 @@ export const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+            className="login-form-input"
           />
         </div>
 
         {error && (
-          <div style={{ color: 'red', marginBottom: '15px' }}>
+          <div className="login-error">
             {error}
           </div>
         )}
@@ -87,7 +88,7 @@ export const LoginPage = () => {
         <button 
           type="submit" 
           disabled={isLoading}
-          style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
+          className="login-button"
         >
           {isLoading ? 'Вход...' : 'Войти'}
         </button>

@@ -1,0 +1,13 @@
+/* src/components/ProfilePage.css */
+
+.profile-container {
+  padding: 20px 0;
+}
+
+.profile-title {
+  margin-bottom: 15px;
+}
+
+.profile-description {
+  line-height: 1.6;
+}

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import './RegisterPage.css';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -47,9 +48,9 @@ export const RegisterPage = () => {
     <div className="container">
       <h1>Регистрация</h1>
       
-      <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px 0' }}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email" style={{ display: 'block', marginBottom: '5px' }}>
+      <form onSubmit={handleSubmit} className="register-form">
+        <div className="register-form-group">
+          <label htmlFor="email" className="register-form-label">
             Email:
           </label>
           <input
@@ -59,12 +60,12 @@ export const RegisterPage = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+            className="register-form-input"
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>
+        <div className="register-form-group">
+          <label htmlFor="password" className="register-form-label">
             Пароль:
           </label>
           <input
@@ -74,12 +75,12 @@ export const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+            className="register-form-input"
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '5px' }}>
+        <div className="register-form-group">
+          <label htmlFor="confirmPassword" className="register-form-label">
             Подтвердите пароль:
           </label>
           <input
@@ -89,12 +90,12 @@ export const RegisterPage = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             disabled={isLoading}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+            className="register-form-input"
           />
         </div>
 
         {error && (
-          <div style={{ color: 'red', marginBottom: '15px' }}>
+          <div className="register-error">
             {error}
           </div>
         )}
@@ -102,12 +103,12 @@ export const RegisterPage = () => {
         <button 
           type="submit" 
           disabled={isLoading}
-          style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
+          className="register-button"
         >
           {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
         </button>
 
-        <p style={{ marginTop: '15px' }}>
+        <p className="register-footer">
           Уже есть аккаунт? <Link to="/login">Войти</Link>
         </p>
       </form>
