@@ -1,19 +1,13 @@
 // src/hooks/useAuth.ts
-import { useState } from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
-// Имитируем состояние аутентификации
 export const useAuth = () => {
-  // По умолчанию пользователь не авторизован
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const login = () => {
-    // В реальном приложении здесь был бы запрос к API
-    setIsLoggedIn(true);
-  };
-
-  const logout = () => {
-    setIsLoggedIn(false);
-  };
-
-  return { isLoggedIn, login, logout };
+  const context = useContext(AuthContext);
+  
+  if (!context) {
+    throw new Error('useAuth должен использоваться внутри AuthProvider');
+  }
+  
+  return context;
 };
