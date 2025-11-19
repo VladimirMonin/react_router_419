@@ -1,16 +1,12 @@
 // src/components/MainLayout.tsx
 import { Outlet, NavLink } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
+import { useAuth } from '../hooks/useAuth';
 import './MainLayout.css'; // Подключим стили для макета
 
-interface MainLayoutProps {
-  isLoggedIn: boolean;
-  logout: () => void;
-}
-
-
-export function MainLayout({ isLoggedIn, logout }: MainLayoutProps) {
+export function MainLayout() {
   const { getTotalItems } = useCart();
+  const { user, logout } = useAuth();
   const totalItems = getTotalItems();
 
   return (
@@ -26,13 +22,21 @@ export function MainLayout({ isLoggedIn, logout }: MainLayoutProps) {
             {totalItems > 0 && <span className="cart-counter">{totalItems}</span>}
           </NavLink>
           
-          {isLoggedIn ? (
+          {user ? (
             <>
-             <NavLink to="/profile">Личный кабинет</NavLink>
-              <button onClick={logout}>Выйти</button>
+              <NavLink to="/profile">Личный кабинет</NavLink>
+              <span style={{ marginLeft: '10px', color: '#666' }}>
+                {user.email}
+              </span>
+              <button onClick={logout} style={{ marginLeft: '10px' }}>
+                Выйти
+              </button>
             </>
           ) : (
-            <NavLink to="/login">Войти</NavLink>
+            <>
+              <NavLink to="/login">Войти</NavLink>
+              <NavLink to="/register">Регистрация</NavLink>
+            </>
           )}
          
         </nav>

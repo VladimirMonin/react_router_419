@@ -7,9 +7,11 @@ import { MainLayout } from './components/MainLayout';
 import { ProfilePage } from './components/ProfilePage';
 import { ProductNotFoundPage } from './components/ProductNotFoundPage';
 import { LoginPage } from './components/LoginPage';
+import { RegisterPage } from './components/RegisterPage';
 import { CartPage } from './components/CartPage';
-import { useAuth } from './hooks/useAuth';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+
 // Простой компонент для главной страницы
 function HomePage() {
   return (
@@ -21,27 +23,25 @@ function HomePage() {
 }
 
 function App() {
-  const { isLoggedIn, login, logout } = useAuth();
   return (
-    <>
-      {/* Можно добавить общую навигацию здесь, если нужно */}
+    <AuthProvider>
       <Routes>
         {/* Родительский маршрут для MainLayout */}
-        <Route path="/" element={<MainLayout isLoggedIn={isLoggedIn} logout={logout} />}>
+        <Route path="/" element={<MainLayout />}>
 
           {/* Дочерние маршруты. Рендер внутри Outlet. Index - означает что маршрут будет активен когда URL совпадает с родительским / */}
           <Route index element={<HomePage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="products/:productID" element={<ProductDetailPage />} />
-          <Route path="login" element={<LoginPage login={login} />} />
-          
-          {/* Страница корзины */}
-          <Route path="cart" element={<CartPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
           
           {/* Секция защищенных маршрутов */}
-          <Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
+          <Route element={<ProtectedRoute />}>
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="cart" element={<CartPage />} />
           </Route>
+          
           {/* Отдельный маршрут "Товар не найден - 404" */}
           <Route path="product-not-found" element={<ProductNotFoundPage />} />
           {/* wildcard - все остальное */}
@@ -59,7 +59,7 @@ function App() {
 
         </Route>
       </Routes>
-    </>
+    </AuthProvider>
   );
 }
 
