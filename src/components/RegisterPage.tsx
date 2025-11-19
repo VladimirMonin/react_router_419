@@ -1,42 +1,43 @@
-// src/components/LoginPage.tsx
+// src/components/RegisterPage.tsx
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { authApi } from '../services/api';
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Получаем путь, с которого пользователя перенаправили, или '/' по умолчанию
-  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Валидация
+    if (password !== confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
+    if (password.length < 3) {
+      setError('Пароль должен содержать минимум 3 символа');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // ВАЖНО: fastapi-users требует форму, а не JSON
-      const formData = new URLSearchParams();
-      formData.append('username', email); // Поле называется username, но передаем email
-      formData.append('password', password);
-
-      const response = await authApi.login(formData);
+      await register(email, password);
       
-      // Сохраняем токен и получаем данные пользователя
-      await login(response.access_token);
-      
-      // Перенаправляем на исходную страницу
-      navigate(from, { replace: true });
+      // После успешной регистрации перенаправляем на страницу входа
+      // В fastapi-users после регистрации нужно отдельно войти
+      navigate('/login');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка входа');
+      setError(err instanceof Error ? err.message : 'Ошибка регистрации');
     } finally {
       setIsLoading(false);
     }
@@ -44,8 +45,7 @@ export const LoginPage = () => {
 
   return (
     <div className="container">
-      <h1>Вход</h1>
-      <p>Вы должны войти в систему, чтобы просмотреть страницу по адресу: {from}</p>
+      <h1>Регистрация</h1>
       
       <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px 0' }}>
         <div style={{ marginBottom: '15px' }}>
@@ -78,6 +78,21 @@ export const LoginPage = () => {
           />
         </div>
 
+        <div style={{ marginBottom: '15px' }}>
+          <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '5px' }}>
+            Подтвердите пароль:
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            disabled={isLoading}
+            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
+          />
+        </div>
+
         {error && (
           <div style={{ color: 'red', marginBottom: '15px' }}>
             {error}
@@ -89,8 +104,12 @@ export const LoginPage = () => {
           disabled={isLoading}
           style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
         >
-          {isLoading ? 'Вход...' : 'Войти'}
+          {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
         </button>
+
+        <p style={{ marginTop: '15px' }}>
+          Уже есть аккаунт? <Link to="/login">Войти</Link>
+        </p>
       </form>
     </div>
   );
