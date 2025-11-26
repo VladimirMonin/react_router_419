@@ -1,7 +1,19 @@
 // src/services/api.ts
 // API клиент для взаимодействия с FastAPI бекендом
 
-import type { Product, LoginResponse, User, RegisterData } from '../types/api';
+import type { 
+  Product, 
+  LoginResponse, 
+  User, 
+  RegisterData,
+  Cart,
+  CartItemAdd,
+  CartItemUpdate,
+  CartItemBatch,
+  ServerCartItem,
+  Order,
+  OrderCreate
+} from '../types/api';
 
 // Базовый URL API - используем прокси
 const API_BASE_URL = '/api';
@@ -124,5 +136,177 @@ export const productsApi = {
     
     const data: Product = await response.json();
     return data;
+  },
+};
+
+// ========== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ АВТОРИЗОВАННЫХ ЗАПРОСОВ ==========
+
+/**
+ * Получить токен из localStorage
+ */
+const getToken = (): string | null => localStorage.getItem('token');
+
+/**
+ * Выполнить авторизованный запрос
+ */
+const authorizedFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  const token = getToken();
+  
+  if (!token) {
+    throw new Error('Необходима авторизация');
+  }
+
+  const headers = new Headers(options.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+  
+  if (!headers.has('Content-Type') && options.body) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  const response = await fetch(url, { ...options, headers });
+  
+  if (response.status === 401) {
+    throw new Error('Сессия истекла. Пожалуйста, войдите снова.');
+  }
+  
+  return response;
+};
+
+// ========== API ДЛЯ КОРЗИНЫ ==========
+
+/**
+ * API для работы с корзиной (требует авторизации)
+ */
+export const cartApi = {
+  /**
+   * Получить текущую корзину пользователя
+   */
+  async get(): Promise<Cart> {
+    const response = await authorizedFetch(`${API_BASE_URL}/cart/`);
+    
+    if (!response.ok) {
+      throw new Error(`Ошибка загрузки корзины: ${response.status}`);
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Добавить товар в корзину
+   */
+  async addItem(data: CartItemAdd): Promise<ServerCartItem> {
+    const response = await authorizedFetch(`${API_BASE_URL}/cart/items`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Ошибка добавления товара в корзину');
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Обновить количество товара в корзине
+   */
+  async updateQuantity(itemId: number, data: CartItemUpdate): Promise<ServerCartItem> {
+    const response = await authorizedFetch(`${API_BASE_URL}/cart/items/${itemId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Ошибка обновления количества');
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Удалить товар из корзины
+   */
+  async removeItem(itemId: number): Promise<void> {
+    const response = await authorizedFetch(`${API_BASE_URL}/cart/items/${itemId}`, {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Ошибка удаления товара из корзины');
+    }
+  },
+
+  /**
+   * Синхронизировать локальную корзину с серверной (merge)
+   * Используется при логине для объединения корзин
+   */
+  async merge(data: CartItemBatch): Promise<Cart> {
+    const response = await authorizedFetch(`${API_BASE_URL}/cart/merge`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Ошибка синхронизации корзины');
+    }
+    
+    return response.json();
+  },
+};
+
+// ========== API ДЛЯ ЗАКАЗОВ ==========
+
+/**
+ * API для работы с заказами (требует авторизации)
+ */
+export const ordersApi = {
+  /**
+   * Создать заказ из текущей корзины
+   * Бэкенд сам возьмёт товары из корзины пользователя
+   */
+  async create(data: OrderCreate): Promise<Order> {
+    const response = await authorizedFetch(`${API_BASE_URL}/orders/`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Ошибка создания заказа');
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Получить все заказы текущего пользователя
+   */
+  async getAll(): Promise<Order[]> {
+    const response = await authorizedFetch(`${API_BASE_URL}/orders/`);
+    
+    if (!response.ok) {
+      throw new Error('Ошибка загрузки заказов');
+    }
+    
+    return response.json();
+  },
+
+  /**
+   * Получить заказ по ID
+   */
+  async getById(orderId: number): Promise<Order> {
+    const response = await authorizedFetch(`${API_BASE_URL}/orders/${orderId}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Заказ не найден');
+      }
+      throw new Error('Ошибка загрузки заказа');
+    }
+    
+    return response.json();
   },
 };
