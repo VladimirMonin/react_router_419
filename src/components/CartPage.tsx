@@ -5,7 +5,7 @@ import { getImageUrl } from '../services/api';
 import './CartPage.css';
 
 export function CartPage() {
-  const { items, updateQuantity, removeFromCart, getTotalItems, clearCart } = useCart();
+  const { items, isLoading, updateQuantity, removeFromCart, getTotalItems, clearCart } = useCart();
 
   // Вычисляем общую сумму в шмеклях (можно добавить переключатель валют)
   const getTotalPrice = () => {
@@ -17,13 +17,30 @@ export function CartPage() {
     return items.reduce((total, item) => total + item.product.price_flurbos * item.quantity, 0);
   };
 
-  const handleQuantityChange = (productId: number, newQuantity: number) => {
-    updateQuantity(productId, newQuantity);
+  const handleQuantityChange = async (productId: number, newQuantity: number) => {
+    try {
+      await updateQuantity(productId, newQuantity);
+    } catch (error) {
+      console.error('Ошибка обновления количества:', error);
+    }
   };
 
-  const handleRemoveItem = (productId: number) => {
-    removeFromCart(productId);
+  const handleRemoveItem = async (productId: number) => {
+    try {
+      await removeFromCart(productId);
+    } catch (error) {
+      console.error('Ошибка удаления товара:', error);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container">
+        <h1>Корзина</h1>
+        <p>Загрузка корзины...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

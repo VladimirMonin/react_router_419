@@ -2,17 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { CartProvider } from './hooks/useCart.tsx';
 import App from './App.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {/* BrowserRouter включает History API браузера для управления навигацией */}
     <BrowserRouter>
-      {/* CartProvider обеспечивает доступ к корзине во всех компонентах */}
-      <CartProvider>
-        <App />
-      </CartProvider>
+      {/* App содержит AuthProvider и CartProvider в правильном порядке */}
+      <App />
     </BrowserRouter>
   </React.StrictMode>,
 );

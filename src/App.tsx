@@ -11,6 +11,7 @@ import { RegisterPage } from './components/RegisterPage';
 import { CartPage } from './components/CartPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './hooks/useCart';
 
 // Простой компонент для главной страницы
 function HomePage() {
@@ -24,41 +25,45 @@ function HomePage() {
 
 function App() {
   return (
+    // AuthProvider должен быть снаружи, чтобы CartProvider имел доступ к useAuth
     <AuthProvider>
-      <Routes>
-        {/* Родительский маршрут для MainLayout */}
-        <Route path="/" element={<MainLayout />}>
+      {/* CartProvider использует useAuth, поэтому он внутри AuthProvider */}
+      <CartProvider>
+        <Routes>
+          {/* Родительский маршрут для MainLayout */}
+          <Route path="/" element={<MainLayout />}>
 
-          {/* Дочерние маршруты. Рендер внутри Outlet. Index - означает что маршрут будет активен когда URL совпадает с родительским / */}
-          <Route index element={<HomePage />} />
-          <Route path="products" element={<ProductsPage />} />
-          <Route path="products/:productID" element={<ProductDetailPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          
-          {/* Секция защищенных маршрутов */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="cart" element={<CartPage />} />
-          </Route>
-          
-          {/* Отдельный маршрут "Товар не найден - 404" */}
-          <Route path="product-not-found" element={<ProductNotFoundPage />} />
-          {/* wildcard - все остальное */}
-          <Route path="*" element={<NotFoundPage />} />
-
-          {/*
-            // Пример вложенных маршрутов для личного кабинета пользователя:
-            <Route path="profile" element={<ProfileLayout />}>
-              <Route index element={<Profile />} /> // /profile
-              <Route path="settings" element={<ProfileSettings />} /> // /profile/settings
-              <Route path="orders" element={<ProfileOrders />} /> // /profile/orders
-              <Route path="*" element={<ProfileNotFound />} /> // для несуществующих страниц профиля
+            {/* Дочерние маршруты. Рендер внутри Outlet. Index - означает что маршрут будет активен когда URL совпадает с родительским / */}
+            <Route index element={<HomePage />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="products/:productID" element={<ProductDetailPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            
+            {/* Секция защищенных маршрутов */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="cart" element={<CartPage />} />
             </Route>
-          */}
+            
+            {/* Отдельный маршрут "Товар не найден - 404" */}
+            <Route path="product-not-found" element={<ProductNotFoundPage />} />
+            {/* wildcard - все остальное */}
+            <Route path="*" element={<NotFoundPage />} />
 
-        </Route>
-      </Routes>
+            {/*
+              // Пример вложенных маршрутов для личного кабинета пользователя:
+              <Route path="profile" element={<ProfileLayout />}>
+                <Route index element={<Profile />} /> // /profile
+                <Route path="settings" element={<ProfileSettings />} /> // /profile/settings
+                <Route path="orders" element={<ProfileOrders />} /> // /profile/orders
+                <Route path="*" element={<ProfileNotFound />} /> // для несуществующих страниц профиля
+              </Route>
+            */}
+
+          </Route>
+        </Routes>
+      </CartProvider>
     </AuthProvider>
   );
 }

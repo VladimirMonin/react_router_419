@@ -1,4 +1,5 @@
 // src/components/ProductCard.tsx
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../types/api';
 import { useCart } from '../hooks/useCart';
@@ -11,10 +12,18 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
   const imageUrl = getImageUrl(product.image_url);
 
-  const handleAddToCart = () => {
-    addToCart(product);
+  const handleAddToCart = async () => {
+    setIsAdding(true);
+    try {
+      await addToCart(product);
+    } catch (error) {
+      console.error('Ошибка добавления в корзину:', error);
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -72,8 +81,12 @@ export function ProductCard({ product }: ProductCardProps) {
         </button>
         
         {/* Кнопка добавления в корзину */}
-        <button className="add-to-cart-button" onClick={handleAddToCart}>
-          В корзину
+        <button 
+          className="add-to-cart-button" 
+          onClick={handleAddToCart}
+          disabled={isAdding}
+        >
+          {isAdding ? 'Добавляем...' : 'В корзину'}
         </button>
       </div>
     </li>
