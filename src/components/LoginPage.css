@@ -25,6 +25,12 @@
   margin-bottom: 15px;
 }
 
+.login-status {
+  color: #0066cc;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
 .login-button {
   padding: 10px 20px;
   font-size: 16px;
